@@ -36,13 +36,6 @@ final class VyfonyPortationExtension extends ConfigurableExtension
 
         $loader->load('services.yaml');
 
-        $portationTargetDefinition = $container->findDefinition($mergedConfig['portation_target']);
-
-        $container
-            ->getDefinition('vyfony_portation.exporter.xlsx.xlsx_exporter')
-            ->setArgument('$entitySource', $portationTargetDefinition)
-            ->setArgument('$schemaProvider', $portationTargetDefinition)
-            ->setArgument('$cellValuesExtractor', $portationTargetDefinition)
-        ;
+        $container->setParameter('vyfony_portation.portation_target', $mergedConfig['portation_target']);
     }
 }

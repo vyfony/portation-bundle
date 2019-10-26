@@ -13,11 +13,22 @@ declare(strict_types=1);
 
 namespace Vyfony\Bundle\PortationBundle;
 
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Vyfony\Bundle\PortationBundle\DependencyInjection\CompilerPass\PortationTargetPass;
 
 /**
  * @author Anton Dyshkant <vyshkant@gmail.com>
  */
 final class VyfonyPortationBundle extends Bundle
 {
+    /**
+     * @param ContainerBuilder $container
+     */
+    public function build(ContainerBuilder $container): void
+    {
+        parent::build($container);
+
+        $container->addCompilerPass(new PortationTargetPass());
+    }
 }

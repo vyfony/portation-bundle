@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Vyfony\Bundle\PortationBundle\Target;
+namespace Vyfony\Bundle\PortationBundle\Target\Part;
 
 use Vyfony\Bundle\PortationBundle\RowType\RowTypeInterface;
 
