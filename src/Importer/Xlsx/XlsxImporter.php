@@ -20,9 +20,9 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Vyfony\Bundle\PortationBundle\Exporter\Xlsx\Accessor\XlsxAccessorInterface;
 use Vyfony\Bundle\PortationBundle\Importer\ImporterInterface;
 use Vyfony\Bundle\PortationBundle\RowType\RowTypeInterface;
-use Vyfony\Bundle\PortationBundle\Target\CellValueHandlerInterface;
-use Vyfony\Bundle\PortationBundle\Target\EntityFactoryInterface;
-use Vyfony\Bundle\PortationBundle\Target\SchemaProviderInterface;
+use Vyfony\Bundle\PortationBundle\Target\Part\CellValueHandlerInterface;
+use Vyfony\Bundle\PortationBundle\Target\Part\EntityFactoryInterface;
+use Vyfony\Bundle\PortationBundle\Target\Part\SchemaProviderInterface;
 
 /**
  * @author Anton Dyshkant <vyshkant@gmail.com>

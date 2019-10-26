@@ -5,11 +5,11 @@ services:
       - method: addExporter
         arguments:
           - xlsx
-          - '@Vyfony\Bundle\PortationBundle\Exporter\Xlsx\XlsxExporter'
+          - '@vyfony_portation.exporter.xlsx.xlsx_exporter'
       - method: addImporter
         arguments:
           - xlsx
-          - '@Vyfony\Bundle\PortationBundle\Importer\Xlsx\XlsxImporter'
+          - '@vyfony_portation.importer.xlsx.xlsx_importer'
 
   Vyfony\Bundle\PortationBundle\Registry\PortationRegistryInterface: '@vyfony_portation.registry.portation_registry'
 

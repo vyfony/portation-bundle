@@ -21,9 +21,9 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Vyfony\Bundle\PortationBundle\Exporter\ExporterInterface;
 use Vyfony\Bundle\PortationBundle\Exporter\Xlsx\Accessor\XlsxAccessorInterface;
-use Vyfony\Bundle\PortationBundle\Target\CellValueExtractorInterface;
-use Vyfony\Bundle\PortationBundle\Target\EntitySourceInterface;
-use Vyfony\Bundle\PortationBundle\Target\SchemaProviderInterface;
+use Vyfony\Bundle\PortationBundle\Target\Part\CellValueExtractorInterface;
+use Vyfony\Bundle\PortationBundle\Target\Part\EntitySourceInterface;
+use Vyfony\Bundle\PortationBundle\Target\Part\SchemaProviderInterface;
 
 /**
  * @author Anton Dyshkant <vyshkant@gmail.com>

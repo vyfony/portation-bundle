@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace Vyfony\Bundle\PortationBundle\Target;
 
-use Vyfony\Bundle\PortationBundle\Target\CellValueExtractorInterface as CellValuesExtractor;
-use Vyfony\Bundle\PortationBundle\Target\CellValueHandlerInterface as CellValueHandler;
-use Vyfony\Bundle\PortationBundle\Target\EntityFactoryInterface as EntityFactory;
-use Vyfony\Bundle\PortationBundle\Target\EntitySourceInterface as EntitySource;
-use Vyfony\Bundle\PortationBundle\Target\SchemaProviderInterface as Schema;
+use Vyfony\Bundle\PortationBundle\Target\Part\CellValueExtractorInterface as CellValuesExtractor;
+use Vyfony\Bundle\PortationBundle\Target\Part\CellValueHandlerInterface as CellValueHandler;
+use Vyfony\Bundle\PortationBundle\Target\Part\EntityFactoryInterface as EntityFactory;
+use Vyfony\Bundle\PortationBundle\Target\Part\EntitySourceInterface as EntitySource;
+use Vyfony\Bundle\PortationBundle\Target\Part\SchemaProviderInterface as Schema;
 
 /**
  * @author Anton Dyshkant <vyshkant@gmail.com>
