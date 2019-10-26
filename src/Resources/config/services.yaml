@@ -1,0 +1,55 @@
+services:
+  vyfony_portation.registry.portation_registry:
+    class: Vyfony\Bundle\PortationBundle\Registry\PortationRegistry
+    calls:
+      - method: addExporter
+        arguments:
+          - xlsx
+          - '@Vyfony\Bundle\PortationBundle\Exporter\Xlsx\XlsxExporter'
+      - method: addImporter
+        arguments:
+          - xlsx
+          - '@Vyfony\Bundle\PortationBundle\Importer\Xlsx\XlsxImporter'
+
+  Vyfony\Bundle\PortationBundle\Registry\PortationRegistryInterface: '@vyfony_portation.registry.portation_registry'
+
+  vyfony_portation.registry.portation_registry_interface:
+    public: true
+    alias: Vyfony\Bundle\PortationBundle\Registry\PortationRegistryInterface
+
+  vyfony_portation.command.export:
+    class: Vyfony\Bundle\PortationBundle\Command\ExportCommand
+    arguments:
+      - '@vyfony_portation.registry.portation_registry_interface'
+    tags:
+      - { name: 'console.command' }
+
+  vyfony_portation.command.import:
+    class: Vyfony\Bundle\PortationBundle\Command\ImportCommand
+    arguments:
+      - '@vyfony_portation.registry.portation_registry_interface'
+    tags:
+      - { name: 'console.command' }
+
+  vyfony_portation.exporter.xlsx.accessor.xlsx_accessor:
+    class: Vyfony\Bundle\PortationBundle\Exporter\Xlsx\Accessor\XlsxAccessor
+
+  Vyfony\Bundle\PortationBundle\Exporter\Xlsx\Accessor\XlsxAccessorInterface: '@vyfony_portation.exporter.xlsx.accessor.xlsx_accessor'
+
+  vyfony_portation.exporter.xlsx.xlsx_exporter:
+    class: Vyfony\Bundle\PortationBundle\Exporter\Xlsx\XlsxExporter
+    arguments:
+      - ~
+      - ~
+      - ~
+      - '@Vyfony\Bundle\PortationBundle\Exporter\Xlsx\Accessor\XlsxAccessorInterface'
+      - '@translator'
+
+  vyfony_portation.importer.xlsx.xlsx_importer:
+    class: Vyfony\Bundle\PortationBundle\Importer\Xlsx\XlsxImporter
+    arguments:
+      - '@doctrine.orm.entity_manager'
+      - ~
+      - ~
+      - ~
+      - '@Vyfony\Bundle\PortationBundle\Exporter\Xlsx\Accessor\XlsxAccessorInterface'

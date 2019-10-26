@@ -1,0 +1,55 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of VyfonyPortationBundle project.
+ *
+ * (c) Anton Dyshkant <vyshkant@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+$header = <<<'HEADER'
+This file is part of VyfonyPortationBundle project.
+
+(c) Anton Dyshkant <vyshkant@gmail.com>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+HEADER;
+
+$finder = PhpCsFixer\Finder::create()
+    ->in(['src', 'tests'])
+    ->append([__FILE__, '.phan.dist']);
+
+return PhpCsFixer\Config::create()
+    ->setRules([
+        '@PHP56Migration' => true,
+        '@PHP56Migration:risky' => true,
+        '@PHP70Migration' => true,
+        '@PHP70Migration:risky' => true,
+        '@PHP71Migration' => true,
+        '@PHP71Migration:risky' => true,
+        '@Symfony' => true,
+        '@Symfony:risky' => true,
+        'non_printable_character' => ['use_escape_sequences_in_strings' => true],
+        'array_syntax' => ['syntax' => 'short'],
+        'header_comment' => [
+            'header' => $header,
+        ],
+        'combine_consecutive_issets' => true,
+        'combine_consecutive_unsets' => true,
+        'no_php4_constructor' => true,
+        'no_useless_else' => true,
+        'no_useless_return' => true,
+        'ordered_class_elements' => true,
+        'ordered_imports' => true,
+        'phpdoc_order' => true,
+        'strict_comparison' => true,
+        'strict_param' => true,
+    ])
+    ->setRiskyAllowed(true)
+    ->setFinder($finder)
+;

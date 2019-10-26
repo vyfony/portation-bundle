@@ -1,0 +1,60 @@
+parameters:
+  hide_circumvention_tip: true
+  process_timeout: null
+  ascii:
+    failed: ~
+    succeeded: ~
+  tasks:
+    phpversion:
+      project: '7.2'
+      metadata:
+        priority: 0
+    git_blacklist:
+      keywords:
+        - ' echo '
+      metadata:
+        priority: -10
+    composer:
+      metadata:
+        priority: -20
+    file_size:
+      max_size: 35M
+      metadata:
+        priority: -30
+    jsonlint:
+      metadata:
+        priority: -40
+    xmllint:
+      metadata:
+        priority: -50
+    yamllint:
+      metadata:
+        priority: -60
+    phplint:
+      triggered_by: ['php']
+      metadata:
+        priority: -70
+    phpmnd:
+      exclude_path: ['vendor']
+      metadata:
+        priority: -80
+    phpcsfixer2:
+      config: .php_cs.dist
+      metadata:
+        priority: -90
+    phpcs:
+      standard: PSR2
+      ignore_patterns: ['/vendor/*']
+      metadata:
+        priority: -100
+    phpunit:
+      always_execute: true
+      metadata:
+        priority: -110
+    securitychecker:
+      metadata:
+        priority: -120
+    phan:
+      config_file: .phan.dist
+      metadata:
+        priority: -130
