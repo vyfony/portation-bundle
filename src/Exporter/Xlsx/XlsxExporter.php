@@ -21,9 +21,11 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Vyfony\Bundle\PortationBundle\Exporter\ExporterInterface;
 use Vyfony\Bundle\PortationBundle\Exporter\Xlsx\Accessor\XlsxAccessorInterface;
+use Vyfony\Bundle\PortationBundle\RowType\RowTypeInterface;
 use Vyfony\Bundle\PortationBundle\Target\Part\CellValueExtractorInterface;
 use Vyfony\Bundle\PortationBundle\Target\Part\EntitySourceInterface;
 use Vyfony\Bundle\PortationBundle\Target\Part\SchemaProviderInterface;
+use Vyfony\Bundle\PortationBundle\VyfonyPortationBundle;
 
 /**
  * @author Anton Dyshkant <vyshkant@gmail.com>
@@ -106,7 +108,6 @@ final class XlsxExporter implements ExporterInterface
      * @param string $pathToFile
      *
      * @throws PhpSpreadsheetException
-     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
     private function exportEntities(
         array $entities,
@@ -119,32 +120,40 @@ final class XlsxExporter implements ExporterInterface
 
         $rowIndex = 0;
 
-        $this->drawHeader($schema, $rowIndex++, $sheet);
+        $this->drawHeader($schema, $rowIndex, $sheet);
 
-        $this->processEntities($entities, $rowIndex, $schema, $sheet);
+        $rootRowType = $this->schemaProvider->getRootRowType();
+
+        $this->processEntities($rootRowType, $entities, $rowIndex, $schema, $sheet);
 
         $writer = new Xlsx($spreadsheet);
         $writer->save($pathToFile);
     }
 
     /**
-     * @param array     $entities
-     * @param int       $rowIndex
-     * @param array     $schema
-     * @param Worksheet $sheet
+     * @param RowTypeInterface $rowType
+     * @param array            $entities
+     * @param int              $rowIndex
+     * @param array            $schema
+     * @param Worksheet        $sheet
      */
-    private function processEntities(array $entities, int &$rowIndex, array $schema, Worksheet $sheet): void
-    {
+    private function processEntities(
+        RowTypeInterface $rowType,
+        array $entities,
+        int &$rowIndex,
+        array $schema,
+        Worksheet $sheet
+    ): void {
         foreach ($entities as $entityIndex => $entity) {
             $cellValues = $this->cellValuesExtractor->getCellValues($entity);
 
-            $this->xlsxAccessor->writeRow($cellValues, $rowIndex++, $schema, $sheet);
+            $this->xlsxAccessor->writeRow($cellValues, ++$rowIndex, $schema, $sheet);
 
-            ++$rowIndex;
+            if (null !== $nestedRowType = $rowType->getNestedRowType()) {
+                $nestedEntities = $this->entitySource->getNestedEntities($entity);
 
-            $nestedEntities = $this->entitySource->getNestedEntities($entity);
-
-            $this->processEntities($nestedEntities, $rowIndex, $schema, $sheet);
+                $this->processEntities($nestedRowType, $nestedEntities, $rowIndex, $schema, $sheet);
+            }
         }
     }
 
@@ -180,11 +189,11 @@ final class XlsxExporter implements ExporterInterface
     private function drawHeader(array $schema, int $rowIndex, Worksheet $sheet): void
     {
         $convertSchemaValueToTranslationKey = function (string $schemaValue): string {
-            return sprintf('portation.xlsx.header.%s', $schemaValue);
+            return sprintf('portation.format.xlsx.header.%s', $schemaValue);
         };
 
         $translate = function (string $key): string {
-            return $this->translator->trans($key, [], 'portation');
+            return $this->translator->trans($key, [], VyfonyPortationBundle::TRANSLATION_DOMAIN);
         };
 
         $this->xlsxAccessor->writeRow(

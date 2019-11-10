@@ -22,6 +22,8 @@ use Vyfony\Bundle\PortationBundle\DependencyInjection\CompilerPass\PortationTarg
  */
 final class VyfonyPortationBundle extends Bundle
 {
+    public const TRANSLATION_DOMAIN = 'portation';
+
     /**
      * @param ContainerBuilder $container
      */

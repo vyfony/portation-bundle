@@ -1,4 +1,11 @@
 services:
+
+  vyfony_portation.registry.portation_registry_interface:
+    public: true
+    alias: Vyfony\Bundle\PortationBundle\Registry\PortationRegistryInterface
+
+  Vyfony\Bundle\PortationBundle\Registry\PortationRegistryInterface: '@vyfony_portation.registry.portation_registry'
+
   vyfony_portation.registry.portation_registry:
     class: Vyfony\Bundle\PortationBundle\Registry\PortationRegistry
     calls:
@@ -10,12 +17,6 @@ services:
         arguments:
           - xlsx
           - '@vyfony_portation.importer.xlsx.xlsx_importer'
-
-  Vyfony\Bundle\PortationBundle\Registry\PortationRegistryInterface: '@vyfony_portation.registry.portation_registry'
-
-  vyfony_portation.registry.portation_registry_interface:
-    public: true
-    alias: Vyfony\Bundle\PortationBundle\Registry\PortationRegistryInterface
 
   vyfony_portation.command.export:
     class: Vyfony\Bundle\PortationBundle\Command\ExportCommand
@@ -53,3 +54,14 @@ services:
       - ~
       - ~
       - '@Vyfony\Bundle\PortationBundle\Exporter\Xlsx\Accessor\XlsxAccessorInterface'
+
+  vyfony_portation.formatter.bool.bool_formatter_iterface:
+    public: true
+    alias: Vyfony\Bundle\PortationBundle\Formatter\Bool\BoolFormatterInterface
+
+  Vyfony\Bundle\PortationBundle\Formatter\Bool\BoolFormatterInterface: '@vyfony_portation.formatter.bool.bool_formatter'
+
+  vyfony_portation.formatter.bool.bool_formatter:
+    class: Vyfony\Bundle\PortationBundle\Formatter\Bool\BoolFormatter
+    arguments:
+      - '@translator'

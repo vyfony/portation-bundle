@@ -76,6 +76,11 @@ final class XlsxAccessor implements XlsxAccessorInterface
         foreach ($cellValues as $cellKey => $cellValue) {
             $columnIndex = $this->getIndexInSchema($cellKey, $schema);
 
+            // todo use some kind of injectable universal converters
+            if (null === $cellValue) {
+                $cellValue = '';
+            }
+
             $this->writeCell($cellValue, $columnIndex, $rowIndex, $sheet);
         }
     }
