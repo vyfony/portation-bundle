@@ -13,14 +13,27 @@ declare(strict_types=1);
 
 namespace Vyfony\Bundle\PortationBundle\Formatter\Bool;
 
+use InvalidArgumentException;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Vyfony\Bundle\PortationBundle\VyfonyPortationBundle;
+
 /**
  * @author Anton Dyshkant <vyshkant@gmail.com>
  */
 final class BoolFormatter implements BoolFormatterInterface
 {
-    public const BOOL_TRUE = 'да';
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
 
-    public const BOOL_FALSE = 'нет';
+    /**
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
 
     /**
      * @param bool|null $bool
@@ -33,7 +46,7 @@ final class BoolFormatter implements BoolFormatterInterface
             return null;
         }
 
-        return $bool ? self::BOOL_TRUE : self::BOOL_FALSE;
+        return $bool ? $this->formatTrue() : $this->formatFalse();
     }
 
     /**
@@ -47,6 +60,53 @@ final class BoolFormatter implements BoolFormatterInterface
             return null;
         }
 
-        return self::BOOL_TRUE === $formattedBool;
+        $formattedTrue = $this->formatTrue();
+        $formattedFalse = $this->formatFalse();
+
+        switch ($formattedBool) {
+            case $formattedTrue:
+                return true;
+            case $formattedFalse:
+                return false;
+            default:
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Cannot parse "%s" as bool: the value is neither true="%s", nor false="%s"',
+                        $formattedBool,
+                        $formattedTrue,
+                        $formattedFalse
+                    )
+                );
+        }
+    }
+
+    /**
+     * @return string
+     */
+    private function formatTrue(): string
+    {
+        return $this->translate('true');
+    }
+
+    /**
+     * @return string
+     */
+    private function formatFalse(): string
+    {
+        return $this->translate('false');
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return string
+     */
+    private function translate(string $key): string
+    {
+        return $this->translator->trans(
+            sprintf('portation.formatter.bool.%s', $key),
+            [],
+            VyfonyPortationBundle::TRANSLATION_DOMAIN
+        );
     }
 }
