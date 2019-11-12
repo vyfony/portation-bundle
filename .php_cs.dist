@@ -20,10 +20,6 @@ For the full copyright and license information, please view the LICENSE
 file that was distributed with this source code.
 HEADER;
 
-$finder = PhpCsFixer\Finder::create()
-    ->in(['src', 'tests'])
-    ->append([__FILE__, '.phan.dist']);
-
 return PhpCsFixer\Config::create()
     ->setRules([
         '@PHP56Migration' => true,
@@ -51,5 +47,10 @@ return PhpCsFixer\Config::create()
         'strict_param' => true,
     ])
     ->setRiskyAllowed(true)
-    ->setFinder($finder)
+    ->setUsingCache(false)
+    ->setFinder(
+        PhpCsFixer\Finder::create()
+            ->in(['src', 'tests'])
+            ->append([__FILE__, '.phan.dist'])
+    )
 ;
