@@ -54,13 +54,6 @@ final class XlsxImporter implements ImporterInterface
      */
     private $xlsxAccessor;
 
-    /**
-     * @param EntityManagerInterface    $entityManager
-     * @param SchemaProviderInterface   $schemaProvider
-     * @param EntityFactoryInterface    $entityFactory
-     * @param CellValueHandlerInterface $cellValueHandlerProvider
-     * @param XlsxAccessorInterface     $xlsxAccessor
-     */
     public function __construct(
         EntityManagerInterface $entityManager,
         SchemaProviderInterface $schemaProvider,
@@ -76,8 +69,6 @@ final class XlsxImporter implements ImporterInterface
     }
 
     /**
-     * @param string $pathToFile
-     *
      * @throws PhpSpreadsheetException
      */
     public function import(string $pathToFile): void
@@ -110,11 +101,6 @@ final class XlsxImporter implements ImporterInterface
     }
 
     /**
-     * @param RowTypeInterface $rowType
-     * @param int              $rowIndex
-     * @param array            $schema
-     * @param Worksheet        $sheet
-     *
      * @return object|false|null
      */
     private function processRow(RowTypeInterface $rowType, int &$rowIndex, array $schema, Worksheet $sheet)

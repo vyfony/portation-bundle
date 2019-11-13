@@ -19,15 +19,11 @@ namespace Vyfony\Bundle\PortationBundle\Target\Part;
 interface CellValueExtractorInterface
 {
     /**
-     * @param object $entity
-     *
      * @return string[]
      */
     public function getCellValues(object $entity): array;
 
     /**
-     * @param object $entity
-     *
      * @return string[][]
      */
     public function getNestedCellValuesCollection(object $entity): array;

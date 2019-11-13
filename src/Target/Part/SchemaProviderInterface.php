@@ -20,9 +20,6 @@ use Vyfony\Bundle\PortationBundle\RowType\RowTypeInterface;
  */
 interface SchemaProviderInterface
 {
-    /**
-     * @return RowTypeInterface
-     */
     public function getRootRowType(): RowTypeInterface;
 
     /**

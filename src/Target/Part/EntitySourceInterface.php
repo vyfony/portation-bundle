@@ -24,8 +24,6 @@ interface EntitySourceInterface
     public function getEntities(): array;
 
     /**
-     * @param object $entity
-     *
      * @return object[]
      */
     public function getNestedEntities(object $entity): array;

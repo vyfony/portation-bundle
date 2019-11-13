@@ -18,18 +18,9 @@ namespace Vyfony\Bundle\PortationBundle\Target\Part;
  */
 interface EntityFactoryInterface
 {
-    /**
-     * @param string $newRowKey
-     *
-     * @return object
-     */
     public function createEntity(string $newRowKey): object;
 
     /**
-     * @param string $entityRowKey
-     * @param object $entity
-     * @param object $nestedEntity
-     *
      * @return mixed
      */
     public function setNestedEntity(string $entityRowKey, object $entity, object $nestedEntity);

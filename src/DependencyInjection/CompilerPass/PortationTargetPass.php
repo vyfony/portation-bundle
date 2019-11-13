@@ -21,9 +21,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 final class PortationTargetPass implements CompilerPassInterface
 {
-    /**
-     * @param ContainerBuilder $container
-     */
     public function process(ContainerBuilder $container): void
     {
         $portationTargetDefinition = $container->findDefinition(
