@@ -22,9 +22,4 @@ interface CellValueExtractorInterface
      * @return string[]
      */
     public function getCellValues(object $entity): array;
-
-    /**
-     * @return string[][]
-     */
-    public function getNestedCellValuesCollection(object $entity): array;
 }
