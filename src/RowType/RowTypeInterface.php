@@ -18,9 +18,6 @@ namespace Vyfony\Bundle\PortationBundle\RowType;
  */
 interface RowTypeInterface
 {
-    /**
-     * @return string
-     */
     public function getNewRowKey(): string;
 
     /**

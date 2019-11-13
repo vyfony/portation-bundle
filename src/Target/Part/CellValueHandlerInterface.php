@@ -19,8 +19,6 @@ namespace Vyfony\Bundle\PortationBundle\Target\Part;
 interface CellValueHandlerInterface
 {
     /**
-     * @param string $newRowKey
-     *
      * @return callable[]
      */
     public function getCellValueHandlers(string $newRowKey): array;

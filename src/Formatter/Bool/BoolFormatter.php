@@ -27,19 +27,11 @@ final class BoolFormatter implements BoolFormatterInterface
      */
     private $translator;
 
-    /**
-     * @param TranslatorInterface $translator
-     */
     public function __construct(TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }
 
-    /**
-     * @param bool|null $bool
-     *
-     * @return string|null
-     */
     public function format(?bool $bool): ?string
     {
         if (null === $bool) {
@@ -49,11 +41,6 @@ final class BoolFormatter implements BoolFormatterInterface
         return $bool ? $this->formatTrue() : $this->formatFalse();
     }
 
-    /**
-     * @param string|null $formattedBool
-     *
-     * @return bool|null
-     */
     public function parse(?string $formattedBool): ?bool
     {
         if (null === $formattedBool) {
@@ -69,38 +56,27 @@ final class BoolFormatter implements BoolFormatterInterface
             case $formattedFalse:
                 return false;
             default:
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Cannot parse "%s" as bool: the value is neither true="%s", nor false="%s"',
-                        $formattedBool,
-                        $formattedTrue,
-                        $formattedFalse
-                    )
+                $message = sprintf(
+                    'Cannot parse "%s" as bool: the value is neither true="%s", nor false="%s"',
+                    $formattedBool,
+                    $formattedTrue,
+                    $formattedFalse
                 );
+
+                throw new InvalidArgumentException($message);
         }
     }
 
-    /**
-     * @return string
-     */
     private function formatTrue(): string
     {
         return $this->translate('true');
     }
 
-    /**
-     * @return string
-     */
     private function formatFalse(): string
     {
         return $this->translate('false');
     }
 
-    /**
-     * @param string $key
-     *
-     * @return string
-     */
     private function translate(string $key): string
     {
         return $this->translator->trans(

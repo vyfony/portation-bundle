@@ -24,9 +24,6 @@ final class VyfonyPortationBundle extends Bundle
 {
     public const TRANSLATION_DOMAIN = 'portation';
 
-    /**
-     * @param ContainerBuilder $container
-     */
     public function build(ContainerBuilder $container): void
     {
         parent::build($container);

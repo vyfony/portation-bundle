@@ -57,13 +57,6 @@ final class XlsxExporter implements ExporterInterface
      */
     private $translator;
 
-    /**
-     * @param EntitySourceInterface       $entitySource
-     * @param SchemaProviderInterface     $schemaProvider
-     * @param CellValueExtractorInterface $cellValuesExtractor
-     * @param XlsxAccessorInterface       $xlsxAccessor
-     * @param TranslatorInterface         $translator
-     */
     public function __construct(
         EntitySourceInterface $entitySource,
         SchemaProviderInterface $schemaProvider,
@@ -79,9 +72,6 @@ final class XlsxExporter implements ExporterInterface
     }
 
     /**
-     * @param string   $pathToFile
-     * @param int|null $bunchSize
-     *
      * @throws PhpSpreadsheetException
      */
     public function export(
@@ -104,9 +94,6 @@ final class XlsxExporter implements ExporterInterface
     }
 
     /**
-     * @param array  $entities
-     * @param string $pathToFile
-     *
      * @throws PhpSpreadsheetException
      */
     private function exportEntities(
@@ -130,13 +117,6 @@ final class XlsxExporter implements ExporterInterface
         $writer->save($pathToFile);
     }
 
-    /**
-     * @param RowTypeInterface $rowType
-     * @param array            $entities
-     * @param int              $rowIndex
-     * @param array            $schema
-     * @param Worksheet        $sheet
-     */
     private function processEntities(
         RowTypeInterface $rowType,
         array $entities,
@@ -157,12 +137,6 @@ final class XlsxExporter implements ExporterInterface
         }
     }
 
-    /**
-     * @param string $pathToFile
-     * @param int    $bunchIndex
-     *
-     * @return string
-     */
     private function getBunchPathToFile(string $pathToFile, int $bunchIndex): string
     {
         $pathToFileParts = explode('.', $pathToFile);
@@ -181,11 +155,6 @@ final class XlsxExporter implements ExporterInterface
         return implode('.', $pathToFileParts);
     }
 
-    /**
-     * @param array     $schema
-     * @param int       $rowIndex
-     * @param Worksheet $sheet
-     */
     private function drawHeader(array $schema, int $rowIndex, Worksheet $sheet): void
     {
         $convertSchemaValueToTranslationKey = function (string $schemaValue): string {
