@@ -134,7 +134,7 @@ final class XlsxImporter implements ImporterInterface
                     $nestedEntity = $this->processRow($nestedRowType, $rowIndex, $schema, $sheet);
 
                     if (false === $nestedEntity) {
-                        return false;
+                        break;
                     }
 
                     if (null === $nestedEntity) {
@@ -142,8 +142,6 @@ final class XlsxImporter implements ImporterInterface
                     }
 
                     $this->entityFactory->setNestedEntity($rowKey, $entity, $nestedEntity);
-
-                    ++$rowIndex;
                 }
             }
 
