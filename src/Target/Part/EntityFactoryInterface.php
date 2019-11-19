@@ -20,8 +20,5 @@ interface EntityFactoryInterface
 {
     public function createEntity(string $newRowKey): object;
 
-    /**
-     * @return mixed
-     */
-    public function setNestedEntity(string $entityRowKey, object $entity, object $nestedEntity);
+    public function setNestedEntity(string $entityRowKey, object $entity, object $nestedEntity): void;
 }
