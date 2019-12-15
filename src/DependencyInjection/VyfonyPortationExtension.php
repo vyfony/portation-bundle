@@ -34,5 +34,9 @@ final class VyfonyPortationExtension extends ConfigurableExtension
         $loader->load('services.yaml');
 
         $container->setParameter('vyfony_portation.portation_target', $mergedConfig['portation_target']);
+
+        if (\array_key_exists('formats', $mergedConfig)) {
+            $container->setParameter('vyfony_portation.formats', $mergedConfig['formats']);
+        }
     }
 }

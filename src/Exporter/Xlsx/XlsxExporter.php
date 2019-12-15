@@ -19,6 +19,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Vyfony\Bundle\PortationBundle\Configuration\XlsxPortationConfiguration;
 use Vyfony\Bundle\PortationBundle\Exporter\ExporterInterface;
 use Vyfony\Bundle\PortationBundle\Exporter\Xlsx\Accessor\XlsxAccessorInterface;
 use Vyfony\Bundle\PortationBundle\RowType\RowTypeInterface;
@@ -57,18 +58,25 @@ final class XlsxExporter implements ExporterInterface
      */
     private $translator;
 
+    /**
+     * @var XlsxPortationConfiguration
+     */
+    private $portationConfiguration;
+
     public function __construct(
         EntitySourceInterface $entitySource,
         SchemaProviderInterface $schemaProvider,
         CellValueExtractorInterface $cellValuesExtractor,
         XlsxAccessorInterface $xlsxAccessor,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        XlsxPortationConfiguration $portationConfiguration
     ) {
         $this->entitySource = $entitySource;
         $this->schemaProvider = $schemaProvider;
         $this->cellValuesExtractor = $cellValuesExtractor;
         $this->xlsxAccessor = $xlsxAccessor;
         $this->translator = $translator;
+        $this->portationConfiguration = $portationConfiguration;
     }
 
     /**
@@ -127,9 +135,17 @@ final class XlsxExporter implements ExporterInterface
         foreach ($entities as $entityIndex => $entity) {
             $cellValues = $this->cellValuesExtractor->getCellValues($entity);
 
-            $this->xlsxAccessor->writeRow($cellValues, ++$rowIndex, $schema, $sheet);
+            $this->xlsxAccessor->writeRow($cellValues, $rowIndex, $schema, $sheet);
+
+            $useEntityRowForFirstNestedEntity = $this->portationConfiguration->getUseEntityRowForFirstNestedEntity();
+
+            ++$rowIndex;
 
             if (null !== $nestedRowType = $rowType->getNestedRowType()) {
+                if ($useEntityRowForFirstNestedEntity) {
+                    --$rowIndex;
+                }
+
                 $nestedEntities = $this->entitySource->getNestedEntities($entity);
 
                 $this->processEntities($nestedRowType, $nestedEntities, $rowIndex, $schema, $sheet);
@@ -155,7 +171,7 @@ final class XlsxExporter implements ExporterInterface
         return implode('.', $pathToFileParts);
     }
 
-    private function drawHeader(array $schema, int $rowIndex, Worksheet $sheet): void
+    private function drawHeader(array $schema, int &$rowIndex, Worksheet $sheet): void
     {
         $convertSchemaValueToTranslationKey = function (string $schemaValue): string {
             return sprintf('portation.format.xlsx.header.%s', $schemaValue);
@@ -176,7 +192,7 @@ final class XlsxExporter implements ExporterInterface
                     )
                 )
             ),
-            $rowIndex,
+            $rowIndex++,
             $schema,
             $sheet
         );

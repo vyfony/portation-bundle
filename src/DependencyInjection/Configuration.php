@@ -29,6 +29,15 @@ final class Configuration implements ConfigurationInterface
             ->getRootNode()
                 ->children()
                     ->scalarNode('portation_target')->isRequired()->cannotBeEmpty()->end()
+                    ->arrayNode('formats')
+                        ->children()
+                            ->arrayNode('xlsx')
+                                ->children()
+                                    ->booleanNode('use_entity_row_for_first_nested_entity')->defaultFalse()->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
                 ->end()
         ;
 

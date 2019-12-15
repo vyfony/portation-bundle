@@ -13,12 +13,14 @@ declare(strict_types=1);
 
 namespace Vyfony\Bundle\PortationBundle\Target\Part;
 
+use Vyfony\Bundle\PortationBundle\RowType\RowTypeInterface;
+
 /**
  * @author Anton Dyshkant <vyshkant@gmail.com>
  */
 interface EntityFactoryInterface
 {
-    public function createEntity(string $newRowKey): object;
+    public function createEntity(RowTypeInterface $rowType): object;
 
     public function setNestedEntity(string $entityRowKey, object $entity, object $nestedEntity): void;
 }

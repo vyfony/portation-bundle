@@ -20,8 +20,9 @@ interface RowTypeInterface
 {
     public function getNewRowKey(): string;
 
-    /**
-     * @return RowTypeInterface|null
-     */
     public function getNestedRowType(): ?self;
+
+    public function getParentRowType(): ?self;
+
+    public function setParentRowType(self $parentRowType): void;
 }

@@ -45,6 +45,7 @@ services:
       - ~
       - '@Vyfony\Bundle\PortationBundle\Exporter\Xlsx\Accessor\XlsxAccessorInterface'
       - '@translator'
+      - '@vyfony_portation.exporter.xlsx.configuration'
 
   vyfony_portation.importer.xlsx.xlsx_importer:
     class: Vyfony\Bundle\PortationBundle\Importer\Xlsx\XlsxImporter
@@ -54,6 +55,7 @@ services:
       - ~
       - ~
       - '@Vyfony\Bundle\PortationBundle\Exporter\Xlsx\Accessor\XlsxAccessorInterface'
+      - '@vyfony_portation.exporter.xlsx.configuration'
 
   vyfony_portation.formatter.bool.bool_formatter_iterface:
     public: true

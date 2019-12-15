@@ -28,10 +28,19 @@ final class EntityRow implements RowTypeInterface
      */
     private $nestedRowType;
 
+    /**
+     * @var RowTypeInterface|null
+     */
+    private $parentRowType;
+
     public function __construct(string $newRowKey, ?RowTypeInterface $nestedRowType)
     {
         $this->newRowKey = $newRowKey;
         $this->nestedRowType = $nestedRowType;
+
+        if (null !== $this->nestedRowType) {
+            $this->nestedRowType->setParentRowType($this);
+        }
     }
 
     public function getNewRowKey(): string
@@ -42,5 +51,15 @@ final class EntityRow implements RowTypeInterface
     public function getNestedRowType(): ?RowTypeInterface
     {
         return $this->nestedRowType;
+    }
+
+    public function getParentRowType(): ?RowTypeInterface
+    {
+        return $this->parentRowType;
+    }
+
+    public function setParentRowType(RowTypeInterface $parentRowType): void
+    {
+        $this->parentRowType = $parentRowType;
     }
 }

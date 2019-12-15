@@ -15,6 +15,8 @@ namespace Vyfony\Bundle\PortationBundle\DependencyInjection\CompilerPass;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
+use Vyfony\Bundle\PortationBundle\Configuration\XlsxPortationConfiguration;
 
 /**
  * @author Anton Dyshkant <vyshkant@gmail.com>
@@ -25,6 +27,23 @@ final class PortationTargetPass implements CompilerPassInterface
     {
         $portationTargetDefinition = $container->findDefinition(
             $container->getParameter('vyfony_portation.portation_target')
+        );
+
+        $this->addXlsxPortation($portationTargetDefinition, $container);
+    }
+
+    private function addXlsxPortation(Definition $portationTargetDefinition, ContainerBuilder $container): void
+    {
+        $xlsxConfiguration = $container->getParameter('vyfony_portation.formats')['xlsx'];
+
+        $container->setDefinition(
+            'vyfony_portation.exporter.xlsx.configuration',
+            new Definition(
+                XlsxPortationConfiguration::class,
+                [
+                    '$useEntityRowForFirstNestedEntity' => $xlsxConfiguration['use_entity_row_for_first_nested_entity'],
+                ]
+            )
         );
 
         $container

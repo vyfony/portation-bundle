@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Vyfony\Bundle\PortationBundle\Target\Part;
 
+use Vyfony\Bundle\PortationBundle\RowType\RowTypeInterface;
+
 /**
  * @author Anton Dyshkant <vyshkant@gmail.com>
  */
@@ -21,5 +23,5 @@ interface CellValueHandlerInterface
     /**
      * @return callable[]
      */
-    public function getCellValueHandlers(string $newRowKey): array;
+    public function getCellValueHandlers(RowTypeInterface $rowType): array;
 }
