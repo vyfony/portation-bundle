@@ -56,6 +56,7 @@ final class PortationTargetPass implements CompilerPassInterface
         $container
             ->getDefinition('vyfony_portation.importer.xlsx.xlsx_importer')
             ->setArgument('$schemaProvider', $portationTargetDefinition)
+            ->setArgument('$entitySaver', $portationTargetDefinition)
             ->setArgument('$entityFactory', $portationTargetDefinition)
             ->setArgument('$cellValueHandlerProvider', $portationTargetDefinition)
         ;

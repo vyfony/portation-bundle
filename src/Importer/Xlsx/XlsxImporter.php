@@ -23,6 +23,7 @@ use Vyfony\Bundle\PortationBundle\Importer\ImporterInterface;
 use Vyfony\Bundle\PortationBundle\RowType\RowTypeInterface;
 use Vyfony\Bundle\PortationBundle\Target\Part\CellValueHandlerInterface;
 use Vyfony\Bundle\PortationBundle\Target\Part\EntityFactoryInterface;
+use Vyfony\Bundle\PortationBundle\Target\Part\EntitySaverInterface;
 use Vyfony\Bundle\PortationBundle\Target\Part\SchemaProviderInterface;
 
 /**
@@ -39,6 +40,11 @@ final class XlsxImporter implements ImporterInterface
      * @var SchemaProviderInterface
      */
     private $schemaProvider;
+
+    /**
+     * @var EntitySaverInterface
+     */
+    private $entitySaver;
 
     /**
      * @var EntityFactoryInterface
@@ -63,6 +69,7 @@ final class XlsxImporter implements ImporterInterface
     public function __construct(
         EntityManagerInterface $entityManager,
         SchemaProviderInterface $schemaProvider,
+        EntitySaverInterface $entitySaver,
         EntityFactoryInterface $entityFactory,
         CellValueHandlerInterface $cellValueHandlerProvider,
         XlsxAccessorInterface $xlsxAccessor,
@@ -70,6 +77,7 @@ final class XlsxImporter implements ImporterInterface
     ) {
         $this->entityManager = $entityManager;
         $this->schemaProvider = $schemaProvider;
+        $this->entitySaver = $entitySaver;
         $this->entityFactory = $entityFactory;
         $this->cellValueHandlerProvider = $cellValueHandlerProvider;
         $this->xlsxAccessor = $xlsxAccessor;
@@ -94,16 +102,14 @@ final class XlsxImporter implements ImporterInterface
         $rootRowType = $this->schemaProvider->getRootRowType();
 
         while (true) {
-            $entity = $this->processRow($rootRowType, $rowIndex, $schema, false, $sheet);
+            $entity = $this->processRow($rootRowType, $rowIndex, $schema, $sheet);
 
             if (false === $entity) {
                 break;
             }
 
             if (null !== $entity) {
-                $this->entityManager->persist($entity);
-
-                $this->entityManager->flush();
+                $this->entitySaver->save($entity);
             }
         }
     }
@@ -115,8 +121,8 @@ final class XlsxImporter implements ImporterInterface
         RowTypeInterface $rowType,
         int &$rowIndex,
         array $schema,
-        bool $isParentRowProcessed,
-        Worksheet $sheet
+        Worksheet $sheet,
+        int $nestedRowIndex = 0
     ) {
         $rowValues = $this->xlsxAccessor->readRow($rowIndex, $schema, $sheet);
 
@@ -127,7 +133,7 @@ final class XlsxImporter implements ImporterInterface
         }
 
         if ($this->isRowTypeAndKeyMatch($rowType, $rowKey) ||
-            $this->isValidNestedRow($rowType, $rowKey, $isParentRowProcessed)
+            $this->isValidNestedRow($rowType, $rowKey, $nestedRowIndex)
         ) {
             $entity = $this->entityFactory->createEntity($rowType);
 
@@ -144,35 +150,43 @@ final class XlsxImporter implements ImporterInterface
 
             ++$rowIndex;
 
-            $nestedRowType = $rowType->getNestedRowType();
+            $nestingLevel = 0;
 
-            if (null !== $nestedRowType) {
-                $isCurrentRowProcessed = true;
+            while (true) {
+                $nestedRowType = $rowType->getNestedRowType($nestingLevel);
 
-                while (true) {
-                    if ($useEntityRowForFirstNestedEntity && $isCurrentRowProcessed) {
-                        --$rowIndex;
-                    }
+                if (null === $nestedRowType) {
+                    break;
+                }
 
-                    $nestedEntity = $this->processRow(
-                        $nestedRowType,
-                        $rowIndex,
-                        $schema,
-                        $isCurrentRowProcessed,
-                        $sheet
-                    );
+                if (0 === $nestedRowIndex && $useEntityRowForFirstNestedEntity) {
+                    --$rowIndex;
+                }
 
-                    $isCurrentRowProcessed = false;
+                if (!$useEntityRowForFirstNestedEntity) {
+                    ++$nestedRowIndex;
+                }
 
-                    if (false === $nestedEntity) {
-                        break;
-                    }
+                $nestedEntity = $this->processRow(
+                    $nestedRowType,
+                    $rowIndex,
+                    $schema,
+                    $sheet,
+                    $nestedRowIndex
+                );
 
-                    if (null === $nestedEntity) {
-                        break;
-                    }
+                if (false === $nestedEntity) {
+                    break;
+                }
 
+                if (null === $nestedEntity) {
+                    ++$nestingLevel;
+                } else {
                     $this->entityFactory->setNestedEntity($rowKey, $entity, $nestedEntity);
+                }
+
+                if ($useEntityRowForFirstNestedEntity) {
+                    ++$nestedRowIndex;
                 }
             }
 
@@ -187,15 +201,12 @@ final class XlsxImporter implements ImporterInterface
         return $rowType->getNewRowKey() === $rowKey;
     }
 
-    private function isValidNestedRow(
-        RowTypeInterface $rowType,
-        string $rowKey,
-        bool $isParentRowProcessed
-    ): bool {
-        if ($this->portationConfiguration->getUseEntityRowForFirstNestedEntity()) {
+    private function isValidNestedRow(RowTypeInterface $rowType, string $rowKey, int $nestedRowIndex): bool
+    {
+        if (0 === $nestedRowIndex && $this->portationConfiguration->getUseEntityRowForFirstNestedEntity()) {
             $parentRowType = $rowType->getParentRowType();
 
-            if (null !== $parentRowType && $isParentRowProcessed) {
+            if (null !== $parentRowType) {
                 return $this->isRowTypeAndKeyMatch($parentRowType, $rowKey);
             }
         }

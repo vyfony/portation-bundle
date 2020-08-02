@@ -11,18 +11,12 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Vyfony\Bundle\PortationBundle\RowType;
+namespace Vyfony\Bundle\PortationBundle\Target\Part;
 
 /**
  * @author Anton Dyshkant <vyshkant@gmail.com>
  */
-interface RowTypeInterface
+interface EntitySaverInterface
 {
-    public function getNewRowKey(): string;
-
-    public function getNestedRowType(int $nestingLevel): ?self;
-
-    public function getParentRowType(): ?self;
-
-    public function setParentRowType(self $parentRowType): void;
+    public function save(object $entity): void;
 }

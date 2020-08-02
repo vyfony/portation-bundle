@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Vyfony\Bundle\PortationBundle\Exporter\Xlsx;
 
 use InvalidArgumentException;
-use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -79,9 +78,6 @@ final class XlsxExporter implements ExporterInterface
         $this->portationConfiguration = $portationConfiguration;
     }
 
-    /**
-     * @throws PhpSpreadsheetException
-     */
     public function export(
         string $pathToFile,
         ?int $bunchSize
@@ -101,9 +97,6 @@ final class XlsxExporter implements ExporterInterface
         }
     }
 
-    /**
-     * @throws PhpSpreadsheetException
-     */
     private function exportEntities(
         array $entities,
         string $pathToFile
@@ -119,37 +112,58 @@ final class XlsxExporter implements ExporterInterface
 
         $rootRowType = $this->schemaProvider->getRootRowType();
 
-        $this->processEntities($rootRowType, $entities, $rowIndex, $schema, $sheet);
+        foreach ($entities as $entity) {
+            $this->processEntity($rootRowType, $entity, $rowIndex, $schema, $sheet);
+        }
 
         $writer = new Xlsx($spreadsheet);
         $writer->save($pathToFile);
     }
 
-    private function processEntities(
+    private function processEntity(
         RowTypeInterface $rowType,
-        array $entities,
+        object $entity,
         int &$rowIndex,
         array $schema,
-        Worksheet $sheet
+        Worksheet $sheet,
+        int $nestedRowIndex = 0
     ): void {
-        foreach ($entities as $entityIndex => $entity) {
-            $cellValues = $this->cellValuesExtractor->getCellValues($entity);
+        $cellValues = $this->cellValuesExtractor->getCellValues($entity);
 
-            $this->xlsxAccessor->writeRow($cellValues, $rowIndex, $schema, $sheet);
+        $this->xlsxAccessor->writeRow($cellValues, $rowIndex, $schema, $sheet);
 
-            $useEntityRowForFirstNestedEntity = $this->portationConfiguration->getUseEntityRowForFirstNestedEntity();
+        $useEntityRowForFirstNestedEntity = $this->portationConfiguration->getUseEntityRowForFirstNestedEntity();
 
-            ++$rowIndex;
+        ++$rowIndex;
 
-            if (null !== $nestedRowType = $rowType->getNestedRowType()) {
-                if ($useEntityRowForFirstNestedEntity) {
-                    --$rowIndex;
-                }
+        $nestingLevel = 0;
 
-                $nestedEntities = $this->entitySource->getNestedEntities($entity);
+        while (true) {
+            $nestedRowType = $rowType->getNestedRowType($nestingLevel);
 
-                $this->processEntities($nestedRowType, $nestedEntities, $rowIndex, $schema, $sheet);
+            if (null === $nestedRowType) {
+                break;
             }
+
+            $nestedEntities = $this->entitySource->getNestedEntities($nestedRowType, $entity);
+
+            if (0 === $nestedRowIndex && $useEntityRowForFirstNestedEntity) {
+                --$rowIndex;
+            }
+
+            if (!$useEntityRowForFirstNestedEntity) {
+                ++$nestedRowIndex;
+            }
+
+            foreach ($nestedEntities as $nestedEntity) {
+                $this->processEntity($nestedRowType, $nestedEntity, $rowIndex, $schema, $sheet, $nestedRowIndex);
+            }
+
+            if ($useEntityRowForFirstNestedEntity) {
+                ++$nestedRowIndex;
+            }
+
+            ++$nestingLevel;
         }
     }
 

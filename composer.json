@@ -27,9 +27,9 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.16",
-        "jakub-onderka/php-parallel-lint": "^1.0",
+        "php-parallel-lint/php-parallel-lint": "^1.0",
         "phan/phan": "^2.3",
-        "phpro/grumphp": "^0.16",
+        "phpro/grumphp": "^0.17",
         "phpunit/phpunit": "^8.4",
         "povils/phpmnd": "^2.1",
         "sensiolabs/security-checker": "^4.0",

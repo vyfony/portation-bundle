@@ -54,6 +54,7 @@ services:
       - ~
       - ~
       - ~
+      - ~
       - '@Vyfony\Bundle\PortationBundle\Exporter\Xlsx\Accessor\XlsxAccessorInterface'
       - '@vyfony_portation.exporter.xlsx.configuration'
 

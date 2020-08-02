@@ -15,13 +15,14 @@ namespace Vyfony\Bundle\PortationBundle\Target;
 
 use Vyfony\Bundle\PortationBundle\Target\Part\CellValueExtractorInterface as CellValuesExtractor;
 use Vyfony\Bundle\PortationBundle\Target\Part\CellValueHandlerInterface as CellValueHandler;
-use Vyfony\Bundle\PortationBundle\Target\Part\EntityFactoryInterface as EntityFactory;
+use Vyfony\Bundle\PortationBundle\Target\Part\EntityFactoryInterface as Factory;
+use Vyfony\Bundle\PortationBundle\Target\Part\EntitySaverInterface as Saver;
 use Vyfony\Bundle\PortationBundle\Target\Part\EntitySourceInterface as EntitySource;
 use Vyfony\Bundle\PortationBundle\Target\Part\SchemaProviderInterface as Schema;
 
 /**
  * @author Anton Dyshkant <vyshkant@gmail.com>
  */
-interface PortationTargetInterface extends CellValueHandler, CellValuesExtractor, EntityFactory, EntitySource, Schema
+interface PortationTargetInterface extends CellValueHandler, CellValuesExtractor, Factory, EntitySource, Schema, Saver
 {
 }

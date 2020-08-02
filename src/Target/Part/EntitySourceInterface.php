@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Vyfony\Bundle\PortationBundle\Target\Part;
 
+use Vyfony\Bundle\PortationBundle\RowType\RowTypeInterface;
+
 /**
  * @author Anton Dyshkant <vyshkant@gmail.com>
  */
@@ -26,5 +28,5 @@ interface EntitySourceInterface
     /**
      * @return object[]
      */
-    public function getNestedEntities(object $entity): array;
+    public function getNestedEntities(RowTypeInterface $nestedRowType, object $entity): array;
 }
